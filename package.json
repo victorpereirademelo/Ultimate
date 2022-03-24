@@ -10,6 +10,7 @@
     "cep-promise": "^4.1.2",
     "cors": "^2.8.5",
     "express": "^4.17.3",
+    "html-pdf": "^3.0.1",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sanitize-html": "^2.7.0",

@@ -7,6 +7,7 @@ import fornecedorRoutes from './routes/fornecedorRoutes';
 import produtoRoutes from './routes/produtoRoutes';
 import pedidoRoutes from './routes/pedidoRoutes';
 import cepRoutes from './routes/cepRoutes';
+import pdfRoutes from './routes/pdfRoutes';
 
 class App {
     constructor() {
@@ -26,6 +27,7 @@ class App {
         this.app.use('/produtos/', produtoRoutes);
         this.app.use('/pedidos/', pedidoRoutes);
         this.app.use('/cep/', cepRoutes);
+        this.app.use('/pdf/', pdfRoutes);
     };
 };
 
