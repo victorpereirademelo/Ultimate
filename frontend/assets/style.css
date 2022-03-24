@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+body {
+    background-color: black;
+    color: rgb(0, 0, 0);
+}
+
+.adjust-header {
+    padding-top: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif
+}
+
+.jumbotron {
+    width: 1200px;
+    background-color: #f5f6f8;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50px;
+}
+
+table {
+    margin-top: 20px;
+}
+
+.form-control {
+    margin-bottom: 8px;
+    margin-left: 350px;
+    text-align: center;
+    padding: 2px;
+    width: 500px;
+}
+
+.select-control {
+    display: flex;
+    margin-bottom: 8px;
+    margin-left: 350px;
+    text-align: center;
+    padding: 2px;
+    width: 500px;
+}
+
+.btn-block {
+    margin-top: 10px;
+    width: 500px;
+}
+
+.selecionado {
+    background-color: rgb(180, 255, 190);
+}
+
+.teste {
+    border-color: brown;
+}
