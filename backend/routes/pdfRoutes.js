@@ -4,6 +4,6 @@ import pdfController from "../controllers/pdfController";
 
 const route = express.Router();
 
-route.get('/', pdfController.index);
+route.get('/:id', pdfController.index);
 
 export default route;

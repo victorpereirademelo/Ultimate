@@ -11,7 +11,7 @@ export default {
             cidade: yup.string().required(),
             uf: yup.string().min(2).max(2).required(),
             numero: yup.number().required(),
-            cnpj: yup.string().required(),
+            cnpj: yup.string().required().max(14),
         }).noUnknown(),
     },
 

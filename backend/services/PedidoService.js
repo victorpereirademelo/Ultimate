@@ -47,7 +47,7 @@ class PedidoService {
     async update(changes, filter) {
         const pedido = await Pedido.findOne({ where: filter });
 
-        if(!pedido) {
+        if (!pedido) {
             throw new Error('Pedido não encontrado');
         }
 
