@@ -3,7 +3,7 @@ import cep from 'cep-promise'
 class CepController {
     async indexAction(req, res) {
         try {
-            const resp = req.body.cep;
+            const resp = req.params.cep;
 
             const resposta = await cep(resp)
 

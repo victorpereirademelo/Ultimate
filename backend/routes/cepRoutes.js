@@ -4,6 +4,6 @@ import cepController from "../controllers/CepController";
 
 const route = express.Router();
 
-route.get('/', cepController.indexAction);
+route.get('/:cep', cepController.indexAction);
 
 export default route;

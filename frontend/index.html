@@ -13,11 +13,12 @@
 <body ng-controller="fornecedorCtrl">
     <div class="jumbotron">
         <h3 class="adjust-header" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">{{app}}</h3>
+        <hr>
+        <input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="O que você está buscando ?">
         <table ng-show="contatos.length" class="table">
             <tr>
-                <th></th>
-                <th>Nome:</th>
-                <th>Email:</th>
+                <th><a href="" ng-click="ordenarPor('nome')">Nome:</a></th>
+                <th><a href="" ng-click="ordenarPor('email')">Email:</a></th>
                 <th>Cep:</th>
                 <th>Rua:</th>
                 <th>Bairro:</th>
@@ -25,29 +26,41 @@
                 <th>UF:</th>
                 <th>Numero:</th>
                 <th>CNPJ:</th>
+                <th>Ações</th>
             </tr>
 
-            <tr ng-class="{selecionado: contato.selecionado}" ng-repeat="contato in contatos">
-                <td><input type="checkbox" ng-model="contato.selecionado"></td>
+            <tr ng-repeat="contato in contatos | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
                 <td>{{contato.nome}}</td>
                 <td>{{contato.email}}</td>
-                <td>{{contato.cep}}</td>
+                <td>{{contato.cep | cep}}</td>
                 <td>{{contato.rua}}</td>
                 <td>{{contato.bairro}}</td>
                 <td>{{contato.cidade}}</td>
                 <td>{{contato.uf | uppercase}}</td>
                 <td>{{contato.numero}}</td>
-                <td>{{contato.cnpj}}</td>
+                <td>{{contato.cnpj | cnpj}}</td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-expanded="false"></button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#" ng-click="editContato(contato.id)">Editar</a>
+                            <a class="dropdown-item cor" href="#" ng-click="excluirContatos(contato.id)">Apagar</a>
+                        </div>
+                    </div>
+                </td>
             </tr>
         </table>
+        <hr>
+        <h5 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">{{msg}} Fornecedor</h5>
         <hr>
         <form name="contatoForm">
             <input class="form-control" type="text" ng-model="contato.nome" name="nome" placeholder="Nome"
                 ng-required="true" ng-minlength="3" maxlength="100">
             <input class="form-control" type="email" ng-model="contato.email" name="email" placeholder="Email"
                 ng-required="true">
-            <input class="form-control" type="text" ng-model="contato.cep" name="cep" placeholder="CEP"
-                ng-required="true" ng-pattern="/^[0-9]{5}[0-9]{3}$/" ng-minlength="8" maxlength="8">
+            <input class="form-control" type="text" ng-model="contato.cep" name="cep" ng-required="true"
+                ui-mask="99999-999" ng-blur="consultCep(contato.cep)">
             <input class="form-control" type="text" ng-model="contato.rua" name="rua" placeholder="Rua"
                 ng-required="true">
             <input class="form-control" type="text" ng-model="contato.bairro" name="bairro" placeholder="Bairro"
@@ -58,32 +71,26 @@
                 ng-minlength="2" maxlength="2">
             <input class="form-control" type="text" ng-model="contato.numero" name="numero" placeholder="Numero"
                 ng-required="true" ng-minlength="2" maxlength="6">
-            <input class="form-control" type="text" ng-model="contato.cnpj" name="cnpj" placeholder="CNPJ"
-                ng-required="true" ng-minlength="14" maxlength="14">
+            <input class="form-control" type="text" ng-model="contato.cnpj" name="cnpj" ng-required="true"
+                ui-mask="99.999.999/9999-99">
         </form>
 
-        <div ng-show="contatoForm.nome.$error.required && contatoForm.nome.$dirty" class="alert alert-danger">
-            Por favor, preencha o campo nome!
-        </div>
-        <div ng-show="contatoForm.nome.$error.minlength || contatoForm.nome.$error.maxlength"
-            class="alert alert-danger">
-            O campo nome deve ter entre 3 e 100 caracteres.
-        </div>
-        <div ng-show="contatoForm.cep.$error.required && contatoForm.cep.$dirty" class="alert alert-danger">
-            Por favor, preencha o campo CEP!
-        </div>
-        <div ng-show="contatoForm.cep.$error.pattern" class="alert alert-danger">
-            O campo CEP deve ter 8 caracteres!!
+        <div ng-show="contatoForm.$error.required && contatoForm.$dirty" class="alert alert-danger">
+            Por favor, preencha todos os campos corretamente!
         </div>
 
-        <button style="margin-bottom: 10px;" class="btn btn-primary btn-block" ng-click="adicionarContato(contato)"
-            ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
-        <button style="margin-bottom: 10px;" class="btn btn-danger btn-block" ng-click="apagarContatos(contatos)"
-            ng-if="isContatoSelecionado(contatos)">Apagar Contatos</button>
+        <button style="margin-bottom: 10px;" class="btn btn-primary btn-block" ng-click="submit(contato, contato.id)"
+            ng-disabled="contatoForm.$invalid">{{msg}} Fornecedor</button>
     </div>
 
     <div ng-include="'footer.html'"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="../node_modules/angular-ui-mask/dist/mask.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./assets/app.js"></script>
     <script src="./assets/script.js"></script>
 </body>
 

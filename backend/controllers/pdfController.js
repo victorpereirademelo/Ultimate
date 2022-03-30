@@ -7,6 +7,7 @@ import fs from "fs";
 
 class PDFController {
     async index(req, res) {
+        try{
         const data = await ProdutoPedido.findAll({
             where: {
                 pedido_id: req.params.id,
@@ -45,9 +46,9 @@ class PDFController {
             return html += `
                 <tr>
                     <td>${element.produto_nome}</td>
-                    <td>${element.produto_preco}</td>
+                    <td>${element.produto_preco.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</td>
                 </tr>
-                            `
+            `
         }, '');
 
         const htmlIndex = head + `
@@ -55,21 +56,41 @@ class PDFController {
             <table class="default-table">
                 <thead>
                     <tr>
-                        <th>Nome</th>
-                        <th>Preço</th>
+                        <th>Nome:</th>
+                        <th>Preço:</th>
                     </tr>
                 </thead>
                 <tbody>${html}</tbody>
             </table>
+            <br>
+            <h3>Pedido</h3>
+            <table class="default-table">
+                <thead>
+                    <tr>
+                        <th>Fornecedor:</th>
+                        <th>Situação:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>${dataMap[0].pedido_fornecedor_nome}</td>
+                        <td>${dataMap[0].pedido_situacao}</td>
+                    </tr>
+                </tbody>
+            </table>
         `
 
-        pdf.create(htmlIndex, {}).toFile("./meupdf.pdf", (err, res) => {
+        pdf.create(htmlIndex, {}).toFile("./meupdf.pdf", (err, resp) => {
             if (err) {
-                console.log("Um Erro Aconteceu");
-            } else {
-                console.log(res);
+                return res.status(400).json({ error: "Erro na criação do pdf" });
             }
+
+            return res.json(resp);
         });
+    }
+    catch (error) {
+        console.log(error);
+    }
     };
 };
 
