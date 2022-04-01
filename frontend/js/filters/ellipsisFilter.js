@@ -3,7 +3,7 @@ angular.module("fornecedores").filter("ellipsis", function () {
         if (value.length <= size) {
             return value;
         }
-        const output = value.substring(0, size) + "...";
+        const output = value.substring(0, (size || 2)) + "...";
         return output;
     };
 });

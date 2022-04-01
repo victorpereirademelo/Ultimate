@@ -6,6 +6,8 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
     const carregarFornecedores = () => {
         fornecedoresService.getFornecedores().then(resp => {
             $scope.fornecedores = resp.data;
+        }).catch((data, status) => {
+            $scope.error = "Não foi possível carregar os dados!";
         });
     };
 

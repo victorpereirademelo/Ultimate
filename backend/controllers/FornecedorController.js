@@ -1,13 +1,22 @@
 import FornecedorService from '../services/FornecedorService';
+import BaseController from './BaseController';
 
-class FornecedorController {
+class FornecedorController extends BaseController {
+    constructor() {
+        super();
+        this.createAction = this.createAction.bind(this);
+        this.readAction = this.readAction.bind(this);
+        this.updateAction = this.updateAction.bind(this);
+        this.deleteAction = this.deleteAction.bind(this);
+    };
+
     async createAction(req, res) {
         try {
             const resp = await FornecedorService.create(req.body);
 
-            return res.json(resp);
+            this.handleResponse(res, resp);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            this.handleError(res, error);
         }
     };
 
@@ -21,9 +30,9 @@ class FornecedorController {
 
             const resp = await FornecedorService[action](options);
 
-            return res.json(resp);
+            this.handleResponse(res, resp);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            this.handleError(res, error);
         }
     };
 
@@ -34,13 +43,11 @@ class FornecedorController {
                 id: req.params.id,
             };
 
-            const resp = await FornecedorService.update(changes, filter);
+            await FornecedorService.update(changes, filter);
 
-            return res.status(200).json({
-                resp: resp[0] === 1 ? 'Editado com Sucesso' : 'Falha ao Editar',
-            });
+            this.handleResponse(res, true);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            this.handleError(res, error);
         }
     };
 
@@ -50,13 +57,11 @@ class FornecedorController {
                 id: req.params.id,
             };
 
-            const resp = await FornecedorService.delete(filter);
+            await FornecedorService.delete(filter);
 
-            return res.status(200).json({
-                resp: resp === 1 ? "Apagado com Sucesso" : "",
-            });
+            this.handleResponse(res, true);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            this.handleError(res, error);
         }
     };
 };
