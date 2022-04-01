@@ -1,35 +1,35 @@
-angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, $http) {
+angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fornecedoresService, cepService) {
     $scope.app = "Fornecedores";
-    $scope.contatos = [];
+    $scope.fornecedores = [];
     $scope.msg = 'Cadastrar';
 
-    const carregarContatos = () => {
-        $http.get("http://localhost:3333/fornecedores").then(resp => {
-            $scope.contatos = resp.data;
+    const carregarFornecedores = () => {
+        fornecedoresService.getFornecedores().then(resp => {
+            $scope.fornecedores = resp.data;
         });
     };
 
     const consultCep = cep => {
-        $http.get(`http://localhost:3333/cep/${cep}`).then(resp => {
-            $scope.contato.rua = resp.data.street;
-            $scope.contato.bairro = resp.data.neighborhood;
-            $scope.contato.cidade = resp.data.city;
-            $scope.contato.uf = resp.data.state;
+        cepService.getCep(cep).then(resp => {
+            $scope.fornecedor.rua = resp.data.street;
+            $scope.fornecedor.bairro = resp.data.neighborhood;
+            $scope.fornecedor.cidade = resp.data.city;
+            $scope.fornecedor.uf = resp.data.state;
         });
     };
 
-    const editContato = id => {
-        $http.get(`http://localhost:3333/fornecedores/${id}`).then(resp => {
+    const editarFornecedor = id => {
+        fornecedoresService.selectFornecedor(id).then(resp => {
             $scope.msg = 'Editar';
-            $scope.contato = resp.data;
+            $scope.fornecedor = resp.data;
         });
     };
 
-    const submit = (contato, id = null) => {
+    const submit = (fornecedor, id = null) => {
         if (id) {
-            $http.put(`http://localhost:3333/fornecedores/${id}`, contato).then(() => {
-                delete $scope.contato;
-                $scope.contatoForm.$setPristine();
+            fornecedoresService.editFornecedor(id, fornecedor).then(() => {
+                delete $scope.fornecedor;
+                $scope.fornecedorForm.$setPristine();
                 $scope.msg = 'Cadastrar'
                 Swal.fire({
                     position: 'top-center',
@@ -39,25 +39,25 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, $h
                     timer: 1500,
                 });
 
-                carregarContatos();
+                carregarFornecedores();
             });
             return;
-        }
+        };
 
-        $http.post("http://localhost:3333/fornecedores", contato).then(() => {
-            delete $scope.contato;
-            $scope.contatoForm.$setPristine();
+        fornecedoresService.saveFornecedor(fornecedor).then(() => {
+            delete $scope.fornecedor;
+            $scope.fornecedorForm.$setPristine();
             Swal.fire({
                 position: 'top-center',
                 icon: 'success',
                 title: 'Fornecedor criado com sucesso',
                 showConfirmButton: false,
                 timer: 1500
-            }).then(() => carregarContatos());
+            }).then(() => carregarFornecedores());
         });
     };
 
-    const excluirContatos = id => {
+    const excluirFornecedor = id => {
         Swal.fire({
             title: 'Tem certeza que deseja deletar esse fornecedor?',
             text: "",
@@ -68,12 +68,12 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, $h
             confirmButtonText: 'Deletar'
         }).then((result) => {
             if (result.isConfirmed) {
-                $http.delete(`http://localhost:3333/fornecedores/${id}`);
+                fornecedoresService.deleteFornecedor(id);
                 Swal.fire(
                     'Deletado!',
                     '',
                     'success'
-                ).then(() => carregarContatos());
+                ).then(() => carregarFornecedores());
             }
         });
     };
@@ -83,11 +83,11 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, $h
         $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
     };
 
-    carregarContatos();
+    carregarFornecedores();
 
     $scope.consultCep = consultCep;
     $scope.submit = submit;
-    $scope.excluirContatos = excluirContatos;
-    $scope.editContato = editContato;
+    $scope.excluirFornecedor = excluirFornecedor;
+    $scope.editarFornecedor = editarFornecedor;
     $scope.ordenarPor = ordenarPor;
 });

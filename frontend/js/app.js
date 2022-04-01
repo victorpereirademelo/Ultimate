@@ -1,0 +1,1 @@
+angular.module("fornecedores", ['ui.mask']);
