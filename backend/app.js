@@ -12,8 +12,6 @@ import pdfRoutes from './routes/pdfRoutes';
 class App {
     constructor() {
         this.app = express();
-        this.middlewares();
-        this.routes();
     };
 
     middlewares() {
@@ -29,6 +27,12 @@ class App {
         this.app.use('/cep/', cepRoutes);
         this.app.use('/pdf/', pdfRoutes);
     };
+
+    setup() {
+        this.middlewares();
+        this.routes();
+        this.app.listen(3333, () => console.log('Server running'));
+    };
 };
 
-export default new App().app;
+export default new App();
