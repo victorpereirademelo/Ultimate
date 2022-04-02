@@ -79,9 +79,9 @@
                 ui-mask="99.999.999/9999-99">
         </form>
 
-        <!-- <div ng-show="fornecedorForm.$error.required && fornecedorForm.$dirty" class="alert alert-danger">
+        <div ng-show="fornecedorForm.$error.required && fornecedorForm.$dirty" class="alert alert-danger">
             Por favor, preencha todos os campos corretamente!
-        </div> -->
+        </div>
 
         <button style="margin-bottom: 10px;" class="btn btn-primary btn-block" ng-click="submit(fornecedor, fornecedor.id)"
             ng-disabled="fornecedorForm.$invalid">{{msg}} Fornecedor</button>
