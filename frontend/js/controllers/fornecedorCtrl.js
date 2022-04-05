@@ -27,7 +27,7 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
         });
     };
 
-    const submit = (fornecedor, id = null) => {
+    const submit = (fornecedor, id) => {
         if (id) {
             fornecedoresService.editFornecedor(id, fornecedor).then(() => {
                 delete $scope.fornecedor;
@@ -40,7 +40,6 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
                     showConfirmButton: false,
                     timer: 1500,
                 });
-
                 carregarFornecedores();
             });
             return;

@@ -1,1 +1,1 @@
-angular.module("fornecedores", ['ui.mask']);
+angular.module("fornecedores", ['ui.mask', 'ngRoute']);
