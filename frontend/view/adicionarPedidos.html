@@ -1,0 +1,27 @@
+<div class="jumbotron">
+    <form>
+        <h5>Escolha um Fornecedor:</h5>
+        <select class="form-control" ng-options="fornecedor.id as fornecedor.nome for fornecedor in fornecedores" ng-model="form.fornecedor_id" ng-required="true">
+            <option value="">Fornecedores</option>
+        </select>
+    </form>
+    <hr>
+    <table ng-show="produtos.length" class="table">
+        <tr>
+            <th></th>
+            <th>Id:</th>
+            <th>Nome:</th>
+            <th>Preço:</th>
+        </tr>
+
+        <tr ng-repeat="produto in produtos">
+            <td><input type="checkbox" ng-model="produto.selected"></td>
+            <td>{{produto.id}}</td>
+            <td>{{produto.nome | nome}}</td> <!--Pipe-->
+            <td>{{produto.preco | preco}}</td>
+        </tr>
+    </table>
+
+    <button type="button" ng-disabled="fornecedorForm.$invalid" class="btn btn-primary btn-block" ng-click="submitCreate()">Adicionar</button>
+    <a class="btn btn-danger btn-block" href="#!/pedidos">Cancelar</a>
+</div>

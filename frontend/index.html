@@ -10,95 +10,33 @@
     <link rel="stylesheet" href="./css/ui.css">
 </head>
 
-<body ng-controller="fornecedorCtrl">
-    <div class="jumbotron">
-        <h3 class="adjust-header" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">{{app}}</h3>
-
-        <ui-alert ng-if="error" title="Ops, aconteceu um problema!">{{error}}</ui-alert>
-        <!-- <ui-alert title="Série sobre AngularJS">Episódio 10 - Criando Diretivas - Parte 1</ui-alert> -->
-
-        <hr>
-        <input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="O que você está buscando ?">
-        <table ng-show="fornecedores.length" class="table">
-            <tr>
-                <th><a href="" ng-click="ordenarPor('nome')">Nome:</a></th>
-                <th><a href="" ng-click="ordenarPor('email')">Email:</a></th>
-                <th>Cep:</th>
-                <th>Rua:</th>
-                <th>Bairro:</th>
-                <th>Cidade:</th>
-                <th>UF:</th>
-                <th>Numero:</th>
-                <th>CNPJ:</th>
-                <th>Ações</th>
-            </tr>
-
-            <tr ng-repeat="fornecedor in fornecedores | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
-                <td>{{fornecedor.nome | nome}}</td> <!--Pipe-->
-                <td>{{fornecedor.email}}</td>
-                <td>{{fornecedor.cep | cep}}</td>
-                <td>{{fornecedor.rua | ellipsis:20}}</td>
-                <td>{{fornecedor.bairro}}</td>
-                <td>{{fornecedor.cidade}}</td>
-                <td>{{fornecedor.uf | uppercase}}</td>
-                <td>{{fornecedor.numero}}</td>
-                <td>{{fornecedor.cnpj | cnpj}}</td>
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-expanded="false"></button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#" ng-click="editarFornecedor(fornecedor.id)">Editar</a>
-                            <a class="dropdown-item cor" href="#" ng-click="excluirFornecedor(fornecedor.id)">Apagar</a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-        <hr>
-        <h5 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">{{msg}} Fornecedor</h5>
-        <hr>
-        <form name="fornecedorForm">
-            <input class="form-control" type="text" ng-model="fornecedor.nome" name="nome" placeholder="Nome"
-                ng-required="true" ng-minlength="3" maxlength="100">
-            <input class="form-control" type="email" ng-model="fornecedor.email" name="email" placeholder="Email"
-                ng-required="true">
-            <input class="form-control" type="text" ng-model="fornecedor.cep" name="cep" ng-required="true"
-                ui-mask="99999-999" ng-blur="consultCep(fornecedor.cep)">
-            <input class="form-control" type="text" ng-model="fornecedor.rua" name="rua" placeholder="Rua"
-                ng-required="true">
-            <input class="form-control" type="text" ng-model="fornecedor.bairro" name="bairro" placeholder="Bairro"
-                ng-required="true">
-            <input class="form-control" type="text" ng-model="fornecedor.cidade" name="cidade" placeholder="Cidade"
-                ng-required="true">
-            <input class="form-control" type="text" ng-model="fornecedor.uf" name="uf" placeholder="UF" ng-required="true"
-                ng-minlength="2" maxlength="2">
-            <input class="form-control" type="text" ng-model="fornecedor.numero" name="numero" placeholder="Numero"
-                ng-required="true" ng-minlength="2" maxlength="6">
-            <input class="form-control" type="text" ng-model="fornecedor.cnpj" name="cnpj" ng-required="true"
-                ui-mask="99.999.999/9999-99">
-        </form>
-
-        <div ng-show="fornecedorForm.$error.required && fornecedorForm.$dirty" class="alert alert-danger">
-            Por favor, preencha todos os campos corretamente!
-        </div>
-
-        <button style="margin-bottom: 10px;" class="btn btn-primary btn-block" ng-click="submit(fornecedor, fornecedor.id)"
-            ng-disabled="fornecedorForm.$invalid">{{msg}} Fornecedor</button>
-    </div>
-
+<body>
+    <div ng-view></div>
     <div ng-include="'./view/footer.html'"></div>
 
     <script src="./lib/angular-1.8.2/angular.js"></script>
+    <script src="./lib/angular-1.8.2/angular-route.js"></script>
     <script src="./js/app.js"></script>
+
     <script src="./js/controllers/fornecedorCtrl.js"></script>
+    <script src="./js/controllers/produtoCtrl.js"></script>
+    <script src="./js/controllers/pedidoCtrl.js"></script>
+
     <script src="./js/services/fornecedoresService.js"></script>
     <script src="./js/services/cepService.js"></script>
+    <script src="./js/services/produtosService.js"></script>
+    <script src="./js/services/pedidosService.js"></script>
+    <script src="./js/services/pdfService.js"></script>
+
+    <script src="./js/config/routeConfig.js"></script>
     <script src="./js/config/configValue.js"></script>
+
     <script src="./js/filters/nomeFilter.js"></script>
     <script src="./js/filters/cepFilter.js"></script>
     <script src="./js/filters/cnpjFilter.js"></script>
     <script src="./js/filters/ellipsisFilter.js"></script>
+    <script src="./js/filters/precoFilter.js"></script>
+
     <script src="./js/directives/uiAlertDirective.js"></script>
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

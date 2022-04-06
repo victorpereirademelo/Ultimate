@@ -54,6 +54,26 @@ table {
     border-color: brown;
 }
 
-.cor {
+.cor1 {
     color: red;
+}
+
+.cor2 {
+    color: rgb(0, 55, 255);
+}
+
+.adjust-button {
+    display: block;
+}
+
+.adjust-button:hover {
+    color: rgb(35, 148, 253);
+}
+
+.adjust-anchors {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
 }

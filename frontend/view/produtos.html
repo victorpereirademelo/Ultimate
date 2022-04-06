@@ -1,0 +1,53 @@
+<div class="jumbotron">
+    <h3 class="adjust-header" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">{{app}}</h3>
+
+    <ui-alert ng-if="error" title="Ops, aconteceu um problema!">{{error}}</ui-alert>
+
+    <hr>
+    <input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="O que você está buscando ?">
+    <table ng-show="produtos.length" class="table">
+        <tr>
+            <th>Id:</th>
+            <th><a href="" ng-click="ordenarPor('nome')">Nome:</a></th>
+            <th><a href="" ng-click="ordenarPor('preco')">Preço:</a></th>
+            <th>Ações</th>
+        </tr>
+
+        <tr ng-repeat="produto in produtos | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
+            <td>{{produto.id}}</td>
+            <td>{{produto.nome | nome}}</td> <!--Pipe-->
+            <td>{{produto.preco | preco}}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false"></button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="" ng-click="editarProduto(produto.id)">Editar</a>
+                        <a class="dropdown-item cor1" href="" ng-click="excluirProduto(produto.id)">Apagar</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <h5 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">{{msg}} Produto</h5>
+    <hr>
+    <form name="produtoForm">
+        <input class="form-control" type="text" ng-model="produto.nome" name="nome" placeholder="Nome"
+            ng-required="true" ng-minlength="3" maxlength="100">
+        <input class="form-control" type="text" ng-model="produto.preco" name="preco" placeholder="Preço"
+            ng-required="true">
+    </form>
+
+    <div ng-show="produtoForm.$error.required && produtoForm.$dirty" class="alert alert-danger">
+        Por favor, preencha todos os campos corretamente!
+    </div>
+
+    <button style="margin-bottom: 10px;" class="btn btn-primary btn-block" ng-click="submit(produto, produto.id)"
+        ng-disabled="produtoForm.$invalid">{{msg}} Produto</button>
+
+    <div class="adjust-anchors">
+        <a class="btn adjust-button" href="#">&#10094; Fornecedores</a>
+        <a class="btn adjust-button" href="#!/pedidos">Pedidos &#10095;</a>
+    </div>
+</div>
