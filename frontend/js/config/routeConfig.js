@@ -15,4 +15,9 @@ angular.module("fornecedores").config(function ($routeProvider) {
         templateUrl: "./view/pedidos.html",
         controller: "pedidoCtrl"
     });
+
+    $routeProvider.when("/adicionarpedidos", {
+        templateUrl: "./view/adicionarPedidos.html",
+        controller: "pedidoCtrl",
+    });
 });

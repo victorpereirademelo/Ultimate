@@ -1,13 +1,49 @@
-angular.module("fornecedores").controller("pedidoCtrl", function ($scope, pedidosService) {
+angular.module("fornecedores").controller("pedidoCtrl", function ($scope, pedidosService, pdfService, fornecedoresService, produtosService, $location) {
     $scope.app = "Pedidos";
     $scope.pedidos = [];
+    $scope.fornecedores = [];
+    $scope.produtos = [];
     $scope.situacoes = ['Aberto', 'Finalizado', 'Cancelado'];
+    $scope.form = {
+        fornecedor_id: null,
+        produto_id: [],
+    };
+
+    const init = () => {
+        carregarPedidos();
+        carregarFornecedores();
+        carregarProdutos();
+    }
+
+    const carregarProdutos = () => {
+        produtosService.getProdutos().then(resp => {
+            $scope.produtos = resp.data
+        });
+    }
+
+    const carregarFornecedores = () => {
+        fornecedoresService.getFornecedores().then(resp => {
+            $scope.fornecedores = resp.data;
+        });
+    };
 
     const carregarPedidos = () => {
         pedidosService.getPedidos().then(resp => {
             $scope.pedidos = resp.data;
         }).catch(() => {
             $scope.error = "Não foi possível carregar os dados!";
+        });
+    };
+
+    const baixarPDF = id => {
+        pdfService.getPDF(id).then(() => {
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'PDF baixado com sucesso',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         });
     };
 
@@ -28,19 +64,41 @@ angular.module("fornecedores").controller("pedidoCtrl", function ($scope, pedido
         };
     };
 
-    // $scope.submitCreate = produto => {
-    //     produtosService.saveProduto(produto).then(() => {
-    //         delete $scope.produto;
-    //         $scope.produtoForm.$setPristine();
-    //         Swal.fire({
-    //             position: 'top-center',
-    //             icon: 'success',
-    //             title: 'Produto criado com sucesso',
-    //             showConfirmButton: false,
-    //             timer: 1500
-    //         }).then(() => carregarPedidos());
-    //     });
-    // };
+    const submitCreate = () => {
+        $scope.form.produto_id = $scope.produtos.filter(prod => prod.selected).map(prod => prod.id);
+
+        if (!$scope.form.produto_id.length) {
+            alert('Selecione Algum Produto');
+            return;
+        }
+
+        if (!$scope.form.fornecedor_id) {
+            alert('Selecione Algum Fornecedor');
+            return;
+        }
+
+        pedidosService.savePedido($scope.form).then(() => {
+            resetForm();
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Pedido criado com sucesso',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                $location.path('/pedidos');
+                carregarPedidos();
+            });
+        });
+    };
+
+    const resetForm = () => {
+        $scope.form = {
+            fornecedor_id: null,
+            produto_id: [],
+        };
+        $scope.produtos.forEach(prod => prod.selected = false);
+    }
 
     const excluirPedido = id => {
         Swal.fire({
@@ -68,9 +126,11 @@ angular.module("fornecedores").controller("pedidoCtrl", function ($scope, pedido
         $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
     };
 
-    carregarPedidos();
+    init();
 
-    $scope.excluirPedido = excluirPedido;
+    $scope.baixarPDF = baixarPDF;
     $scope.editarPedido = editarPedido;
+    $scope.submitCreate = submitCreate;
+    $scope.excluirPedido = excluirPedido;
     $scope.ordenarPor = ordenarPor;
 });

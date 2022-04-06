@@ -23,7 +23,7 @@
                         <a ng-show="pedido.situacao.includes('Aberto')" class="dropdown-item" href=""
                             data-bs-toggle="modal" data-bs-target="#exampleModal" ng-click="editarPedido(pedido.id)">Editar</a>
                         <a ng-show="pedido.situacao.includes('Aberto')" class="dropdown-item cor1" href="" ng-click="excluirPedido(pedido.id)">Apagar</a>
-                        <a class="dropdown-item cor2" href="" ng-click="imprimirPDF(pedido.id)">Imprimir PDF</a>
+                        <a class="dropdown-item cor2" href="" ng-click="baixarPDF(pedido.id)">Baixar PDF</a>
                     </div>
                 </div>
             </td>
@@ -54,5 +54,6 @@
       </div>
     <!--Modal-->
 
+    <a class="btn btn-primary btn-block" href="#!/adicionarpedidos">Adicionar Pedido</a>
     <a class="btn adjust-button" href="#!/produtos">&#10094; Produtos</a>
 </div>
