@@ -24,7 +24,9 @@ class ProdutoService {
     };
 
     list() {
-        return Produto.findAll();
+        return Produto.findAll({
+            order: [['id', 'DESC']],
+        });
     };
 
     async update(changes, filter) {
@@ -42,7 +44,7 @@ class ProdutoService {
             throw new Error('Esse produto já existe');
         }
 
-        return Produto.update(changes, {
+        Produto.update(changes, {
             where: filter,
         });
     };
@@ -54,7 +56,7 @@ class ProdutoService {
             throw new Error('Produto não existe');
         }
 
-        return Produto.destroy({
+        Produto.destroy({
             where: filter,
         });
     };

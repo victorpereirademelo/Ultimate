@@ -1,15 +1,20 @@
-import cep from 'cep-promise'
+import CepService from "../services/cepService";
+import BaseController from "./BaseController";
+class CepController extends BaseController {
+    constructor() {
+        super();
+        this.indexAction = this.indexAction.bind(this);
+    }
 
-class CepController {
     async indexAction(req, res) {
         try {
             const resp = req.params.cep;
 
-            const resposta = await cep(resp)
+            const resposta = await CepService.index(resp);
 
-            return res.json(resposta)
+            this.handleResponse(res, resposta);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            this.handleError(res, error);
         }
     };
 };

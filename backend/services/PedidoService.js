@@ -41,7 +41,9 @@ class PedidoService {
     };
 
     list() {
-        return Pedido.findAll();
+        return Pedido.findAll({
+            order: [['id', 'DESC']]
+        });
     };
 
     async update(changes, filter) {
@@ -51,7 +53,7 @@ class PedidoService {
             throw new Error('Pedido não encontrado');
         }
 
-        return Pedido.update(changes, {
+        Pedido.update(changes, {
             where: filter,
         });
     };
@@ -63,7 +65,7 @@ class PedidoService {
             throw new Error('Pedido não encontrado');
         }
 
-        return Pedido.destroy({
+        Pedido.destroy({
             where: filter,
         });
     };

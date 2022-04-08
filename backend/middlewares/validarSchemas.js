@@ -4,7 +4,7 @@ const validarSchemas = schemas => {
         const chaves = Object.keys(schemas);
 
         const validarChaves = await Promise.all(
-            chaves.map(async chave => {
+            chaves.map(chave => {
 
                 if (!schemas[chave]) {
                     return false;

@@ -1,9 +1,9 @@
-angular.module("fornecedores").controller("pedidoCtrl", function ($scope, pedidosService, pdfService, fornecedoresService, produtosService, $location) {
-    $scope.app = "Pedidos";
+angular.module("fornecedores").controller("pedidoCtrl", function ($scope, pedidosService, config, fornecedoresService, produtosService, $location) {
+    $scope.app = "Pedidos"
     $scope.pedidos = [];
     $scope.fornecedores = [];
     $scope.produtos = [];
-    $scope.situacoes = ['Aberto', 'Finalizado', 'Cancelado'];
+    $scope.situacoes = ['Finalizado', 'Cancelado'];
     $scope.form = {
         fornecedor_id: null,
         produto_id: [],
@@ -13,13 +13,13 @@ angular.module("fornecedores").controller("pedidoCtrl", function ($scope, pedido
         carregarPedidos();
         carregarFornecedores();
         carregarProdutos();
-    }
+    };
 
     const carregarProdutos = () => {
         produtosService.getProdutos().then(resp => {
-            $scope.produtos = resp.data
+            $scope.produtos = resp.data;
         });
-    }
+    };
 
     const carregarFornecedores = () => {
         fornecedoresService.getFornecedores().then(resp => {
@@ -29,21 +29,13 @@ angular.module("fornecedores").controller("pedidoCtrl", function ($scope, pedido
 
     const carregarPedidos = () => {
         pedidosService.getPedidos().then(resp => {
-            $scope.pedidos = resp.data;
+            $scope.pedidos = resp.data.map(pedido => {
+                pedido.pdf_url = `${config.baseUrl}/pdf/${pedido.id}`;
+
+                return pedido;
+            });
         }).catch(() => {
             $scope.error = "Não foi possível carregar os dados!";
-        });
-    };
-
-    const baixarPDF = id => {
-        pdfService.getPDF(id).then(() => {
-            Swal.fire({
-                position: 'top-center',
-                icon: 'success',
-                title: 'PDF baixado com sucesso',
-                showConfirmButton: false,
-                timer: 1500,
-            });
         });
     };
 
@@ -128,7 +120,6 @@ angular.module("fornecedores").controller("pedidoCtrl", function ($scope, pedido
 
     init();
 
-    $scope.baixarPDF = baixarPDF;
     $scope.editarPedido = editarPedido;
     $scope.submitCreate = submitCreate;
     $scope.excluirPedido = excluirPedido;
