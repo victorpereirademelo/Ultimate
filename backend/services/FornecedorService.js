@@ -26,7 +26,7 @@ class FornecedorService {
             throw new Error('Fornecedor não existe');
         }
 
-        return Fornecedor.update(changes, {
+        Fornecedor.update(changes, {
             where: filter,
         });
     };
@@ -38,7 +38,7 @@ class FornecedorService {
             throw new Error('Fornecedor não existe');
         }
 
-        return Fornecedor.destroy({
+        Fornecedor.destroy({
             where: { id: filter.id },
         });
     };

@@ -4,11 +4,18 @@ import BaseController from './BaseController';
 class FornecedorController extends BaseController {
     constructor() {
         super();
+
         this.createAction = this.createAction.bind(this);
         this.readAction = this.readAction.bind(this);
         this.updateAction = this.updateAction.bind(this);
         this.deleteAction = this.deleteAction.bind(this);
     };
+
+    /*
+        Quando tu usa o controller dentro da rota do express, quando essa função é chamada, a instância do this
+        é a instância da chamada do express o que acaba não deixando os métodos acessíveis, como o this.service
+        daí essa função .bind ela sobrescreve a instância do this para o que chamou no momento da declaração
+    */
 
     async createAction(req, res) {
         try {
@@ -25,6 +32,7 @@ class FornecedorController extends BaseController {
             const filter = {
                 id: req.params.id,
             };
+
             const action = filter.id ? 'find' : 'list';
             const options = filter.id ? filter : '';
 

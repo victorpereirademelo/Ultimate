@@ -29,9 +29,9 @@ class App {
     };
 
     setup() {
+        this.app.listen(3333, () => console.log('Server running'));
         this.middlewares();
         this.routes();
-        this.app.listen(3333, () => console.log('Server running'));
     };
 };
 

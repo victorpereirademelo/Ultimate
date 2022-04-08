@@ -1,13 +1,22 @@
 import PedidoService from '../services/PedidoService';
+import BaseController from './BaseController';
 
-class PedidoController {
+class PedidoController extends BaseController {
+    constructor () {
+        super();
+        this.createAction = this.createAction.bind(this);
+        this.readAction = this.readAction.bind(this);
+        this.updateAction = this.updateAction.bind(this);
+        this.deleteAction = this.deleteAction.bind(this);
+    };
+
     async createAction(req, res) {
         try {
             const resp = await PedidoService.create(req.body);
 
-            return res.json(resp);
+            this.handleResponse(res, resp);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            this.handleError(res, error);
         }
     };
 
@@ -22,10 +31,10 @@ class PedidoController {
 
             const resp = await PedidoService[action](options);
 
-            return res.json(resp);
+            this.handleResponse(res, resp);
         } catch (error) {
-            res.status(500).json({ error: error.message });
-        };
+            this.handleError(res, error);
+        }
     };
 
     async updateAction(req, res) {
@@ -35,13 +44,11 @@ class PedidoController {
                 id: req.params.id,
             };
 
-            const resp = await PedidoService.update(changes, filter);
+            await PedidoService.update(changes, filter);
 
-            return res.status(200).json({
-                resp: resp[0] === 1 ? 'Editado com Sucesso' : 'Falha ao Editar',
-            });
+            this.handleResponse(res, true);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            this.handleError(res, error);
         }
     };
 
@@ -51,13 +58,11 @@ class PedidoController {
                 id: req.params.id,
             };
 
-            const resp = await PedidoService.delete(filter);
+            await PedidoService.delete(filter);
 
-            return res.status(200).json({
-                resp: resp === 1 ? "Apagado com Sucesso" : "",
-            });
+            this.handleResponse(res, true);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            this.handleError(res, error);
         }
     };
 };

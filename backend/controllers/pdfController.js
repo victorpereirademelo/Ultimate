@@ -7,7 +7,7 @@ import fs from "fs";
 
 class PDFController {
     async index(req, res) {
-        try{
+        try {
         const data = await ProdutoPedido.findAll({
             where: {
                 pedido_id: req.params.id,
@@ -40,7 +40,7 @@ class PDFController {
             };
         });
 
-        const head = fs.readFileSync('html-template/default-header.html', 'utf-8');
+        const head = fs.readFileSync('html-template/default-header.html', 'UTF-8');
 
         const html = dataMap.reduce((html, element) => {
             return html += `
@@ -80,12 +80,13 @@ class PDFController {
             </table>
         `
 
-        pdf.create(htmlIndex, {}).toFile("./meupdf.pdf", (err, resp) => {
+        pdf.create(htmlIndex, {}).toFile("./uploads/meupdf.pdf", (err, resp) => {
             if (err) {
                 return res.status(400).json({ error: "Erro na criação do pdf" });
             }
 
-            return res.json(resp);
+            res.type('pdf');
+            res.download('./uploads/meupdf.pdf');
         });
     }
     catch (error) {

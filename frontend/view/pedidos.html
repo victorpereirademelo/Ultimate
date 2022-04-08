@@ -11,7 +11,9 @@
             <th><a href="" ng-click="ordenarPor('situacao')">Situação:</a></th>
             <th>Ações</th>
         </tr>
-
+<!-- <pre>
+    {{pedidos[0] | json}}
+</pre> -->
         <tr ng-repeat="pedido in pedidos | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
             <td>{{pedido.id}}</td>
             <td>{{pedido.situacao}}</td> <!--Pipe-->
@@ -23,7 +25,7 @@
                         <a ng-show="pedido.situacao.includes('Aberto')" class="dropdown-item" href=""
                             data-bs-toggle="modal" data-bs-target="#exampleModal" ng-click="editarPedido(pedido.id)">Editar</a>
                         <a ng-show="pedido.situacao.includes('Aberto')" class="dropdown-item cor1" href="" ng-click="excluirPedido(pedido.id)">Apagar</a>
-                        <a class="dropdown-item cor2" href="" ng-click="baixarPDF(pedido.id)">Baixar PDF</a>
+                        <a class="dropdown-item cor2" href="{{ pedido.pdf_url }}" target="_blank">Baixar PDF</a>
                     </div>
                 </div>
             </td>
@@ -47,7 +49,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" ng-click="submitUpdate(pedido)" ng-disabled="pedidoForm.$invalid">Editar Pedido</button>
+              <button type="button" class="btn btn-primary" ng-click="submitUpdate(pedido)" data-bs-dismiss="modal" ng-disabled="pedidoForm.$invalid">Editar Pedido</button>
             </div>
           </div>
         </div>

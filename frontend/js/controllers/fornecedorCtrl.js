@@ -60,7 +60,7 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
 
     const excluirFornecedor = id => {
         Swal.fire({
-            title: 'Tem certeza que deseja deletar esse fornecedor?',
+            title: 'Tem certeza que deseja deletar esse Fornecedor?',
             text: "",
             icon: 'warning',
             showCancelButton: true,
