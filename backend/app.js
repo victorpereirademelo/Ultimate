@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import express from 'express';
 import cors from 'cors';
 
@@ -11,6 +12,7 @@ import pdfRoutes from './routes/pdfRoutes';
 
 class App {
     constructor() {
+        dotenv.config();
         this.app = express();
     };
 
@@ -29,9 +31,9 @@ class App {
     };
 
     setup() {
-        this.app.listen(3333, () => console.log('Server running'));
         this.middlewares();
         this.routes();
+        this.app.listen(3333, () => console.log('Server running'));
     };
 };
 

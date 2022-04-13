@@ -77,3 +77,15 @@ table {
     align-content: center;
     justify-content: center;
 }
+
+.adjust-select {
+    width: 400px;
+    height: 28px;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid dimgray;
+}
+
+.adjust-select:focus {
+    background-color: rgb(2, 80, 196)
+}

@@ -73,6 +73,7 @@ class Fornecedor extends Model {
         },
             {
                 sequelize: connection,
+                paranoid: true,
                 tableName: 'fornecedores',
             });
 

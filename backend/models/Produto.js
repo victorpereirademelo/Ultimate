@@ -26,6 +26,7 @@ class Produto extends Model {
         },
             {
                 sequelize: connection,
+                paranoid: true,
                 tableName: 'produtos',
             });
 

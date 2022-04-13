@@ -16,16 +16,17 @@ class PDFController {
             include: [{
                 model: Produto,
                 attributes: ['nome', 'preco'],
+                paranoid: false,
             }, {
                 model: Pedido,
                 where: {
                     id: req.params.id,
                 },
                 attributes: ['situacao'],
-                include: [{
+                include: {
                     model: Fornecedor,
                     attributes: ['nome'],
-                }],
+                },
             }],
             raw: true,
             nest: true,
