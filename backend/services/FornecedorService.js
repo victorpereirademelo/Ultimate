@@ -1,18 +1,24 @@
 import Fornecedor from "../models/Fornecedor";
 
 class FornecedorService {
+    async verifica(id) {
+        const fornecedorCount = await Fornecedor.count({ where: { id } });
+
+        const temFornecedor = !!fornecedorCount; // Parse Boolean
+
+        if (!temFornecedor) {
+            throw new Error('Fornecedor não encontrado');
+        }
+    };
+
     create(data) {
         return Fornecedor.create(data);
     };
 
     async find(filter) {
-        const fornecedor = await Fornecedor.findOne({ where: filter });
+        await this.verifica(filter.id);
 
-        if (!fornecedor) {
-            throw new Error('Fornecedor não encontrado');
-        }
-
-        return fornecedor;
+        return Fornecedor.findOne({ where: filter });
     };
 
     list() {
@@ -20,25 +26,17 @@ class FornecedorService {
     };
 
     async update(changes, filter) {
-        const fornecedor = await Fornecedor.findOne({ where: filter });
+        await this.verifica(filter.id);
 
-        if (!fornecedor) {
-            throw new Error('Fornecedor não existe');
-        }
-
-        Fornecedor.update(changes, {
+        return Fornecedor.update(changes, {
             where: filter,
         });
     };
 
     async delete(filter) {
-        const fornecedor = await Fornecedor.findOne({ where: filter });
+        await this.verifica(filter.id);
 
-        if (!fornecedor) {
-            throw new Error('Fornecedor não existe');
-        }
-
-        Fornecedor.destroy({
+        return Fornecedor.destroy({
             where: { id: filter.id },
         });
     };

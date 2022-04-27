@@ -34,7 +34,7 @@ class FornecedorController extends BaseController {
             };
 
             const action = filter.id ? 'find' : 'list';
-            const options = filter.id ? filter : '';
+            const options = filter.id ? filter : {};
 
             const resp = await FornecedorService[action](options);
 

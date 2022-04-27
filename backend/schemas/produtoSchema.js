@@ -3,14 +3,14 @@ import * as yup from "yup";
 export default {
     create: {
         body: yup.object().shape({
-            nome: yup.string().min(5).max(255).required(),
+            nome: yup.string().min(3).max(100).required(),
             preco: yup.number().required(),
         }).noUnknown(),
     },
 
     update: {
         body: yup.object().shape({
-            nome: yup.string().min(5).max(255).required(),
+            nome: yup.string().min(3).max(100).required(),
             preco: yup.number().required(),
         }).noUnknown(),
 

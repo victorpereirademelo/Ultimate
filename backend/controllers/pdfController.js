@@ -8,51 +8,49 @@ import fs from "fs";
 class PDFController {
     async index(req, res) {
         try {
-        const data = await ProdutoPedido.findAll({
-            where: {
-                pedido_id: req.params.id,
-            },
-            attributes: [],
-            include: [{
-                model: Produto,
-                attributes: ['nome', 'preco'],
-                paranoid: false,
-            }, {
-                model: Pedido,
+            const data = await ProdutoPedido.findAll({
                 where: {
-                    id: req.params.id,
+                    pedido_id: req.params.id,
                 },
-                attributes: ['situacao'],
-                include: {
-                    model: Fornecedor,
-                    attributes: ['nome'],
-                },
-            }],
-            raw: true,
-            nest: true,
-        });
+                attributes: [],
+                include: [{
+                    model: Produto,
+                    attributes: ['nome', 'preco'],
+                    paranoid: false,
+                }, {
+                    model: Pedido,
+                    attributes: ['situacao'],
+                    include: {
+                        model: Fornecedor,
+                        attributes: ['nome'],
+                        paranoid: false,
+                    },
+                }],
+                raw: true,
+                nest: true,
+            });
 
-        const dataMap = data.map(test => {
-            return {
-                produto_nome: test.Produto.nome,
-                produto_preco: test.Produto.preco,
-                pedido_situacao: test.Pedido.situacao,
-                pedido_fornecedor_nome: test.Pedido.Fornecedor.nome,
-            };
-        });
+            const dataMap = data.map(element => {
+                return {
+                    produto_nome: element.Produto.nome,
+                    produto_preco: element.Produto.preco,
+                    pedido_situacao: element.Pedido.situacao,
+                    pedido_fornecedor_nome: element.Pedido.Fornecedor.nome,
+                };
+            });
 
-        const head = fs.readFileSync('html-template/default-header.html', 'UTF-8');
+            const head = fs.readFileSync('html-template/default-header.html', 'UTF-8');
 
-        const html = dataMap.reduce((html, element) => {
-            return html += `
+            const html = dataMap.reduce((html, element) => {
+                return html += `
                 <tr>
                     <td>${element.produto_nome}</td>
                     <td>${element.produto_preco.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</td>
                 </tr>
             `
-        }, '');
+            }, '');
 
-        const htmlIndex = head + `
+            const htmlIndex = head + `
             <h3>Produtos</h3>
             <table class="default-table">
                 <thead>
@@ -81,18 +79,18 @@ class PDFController {
             </table>
         `
 
-        pdf.create(htmlIndex, {}).toFile("./uploads/meupdf.pdf", (err, resp) => {
-            if (err) {
-                return res.status(400).json({ error: "Erro na criação do pdf" });
-            }
+            pdf.create(htmlIndex, {}).toFile("./uploads/meupdf.pdf", err => {
+                if (err) {
+                    return res.status(400).json({ error: "Erro na criação do pdf" });
+                }
 
-            res.type('pdf');
-            res.download('./uploads/meupdf.pdf');
-        });
-    }
-    catch (error) {
-        console.log(error);
-    }
+                res.type('pdf');
+                res.download('./uploads/meupdf.pdf');
+            });
+        }
+        catch {
+            return res.status(500).json({ error: "O pedido que você deseja imprimir o pdf não existe" });
+        }
     };
 };
 

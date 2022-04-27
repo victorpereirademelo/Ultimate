@@ -4,6 +4,7 @@
         <select class="form-control" ng-options="fornecedor.id as fornecedor.nome for fornecedor in fornecedores" ng-model="form.fornecedor_id" ng-required="true">
             <option value="">Fornecedores</option>
         </select>
+        <!-- {{form}} -->
     </form>
     <hr>
     <table ng-show="produtos.length" class="table">
@@ -21,7 +22,10 @@
             <td>{{produto.preco | preco}}</td>
         </tr>
     </table>
-
-    <button type="button" ng-disabled="fornecedorForm.$invalid" class="btn btn-primary btn-block" ng-click="submitCreate()">Adicionar</button>
+    <!-- <pre>
+    {{produtos | json}}
+    </pre> -->
+    <button type="button" class="btn btn-primary btn-block" ng-click="submitCreate()">Adicionar</button>
+    <br>
     <a class="btn btn-danger btn-block" href="#!/pedidos">Cancelar</a>
 </div>

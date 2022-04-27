@@ -50,8 +50,12 @@ class Fornecedor extends Model {
             },
             numero: {
                 type: Sequelize.INTEGER,
-                defaultValue: '',
+                defaultValue: null,
                 validate: {
+                    len: {
+                        args: [2, 6],
+                        msg: "Numero precisa ter entre 2 e 6 caracteres"
+                    },
                     isInt: {
                         msg: 'Precisa ser um numero inteiro',
                     },

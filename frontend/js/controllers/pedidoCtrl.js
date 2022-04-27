@@ -39,6 +39,11 @@ angular.module("fornecedores").controller("pedidoCtrl",
 
         const editarPedido = id => {
             pedidosService.selectPedido(id).then(resp => {
+                // console.log(`
+                //     fornecedor_id: ${resp.data.fornecedor.id}, \n
+                //     situacao: ${resp.data.situacao}, \n
+                //     protudo_id: ${resp.data.produtos.map(produto => produto.id)}
+                // `);
                 $scope.editForm = {
                     fornecedor_id: resp.data.fornecedor.id,
                     situacao: resp.data.situacao,
@@ -76,7 +81,7 @@ angular.module("fornecedores").controller("pedidoCtrl",
             };
 
             $scope.produtos.forEach(prod => prod.selected = false);
-        }
+        };
 
         const submitCreate = () => {
             $scope.form.produto_id = $scope.produtos.filter(prod => prod.selected).map(prod => prod.id);

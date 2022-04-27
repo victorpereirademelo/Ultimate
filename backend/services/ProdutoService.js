@@ -1,12 +1,23 @@
+import { Op } from "sequelize";
 import Produto from "../models/Produto";
 
 class ProdutoService {
+    async verifica(id) {
+        const produtoCount = await Produto.count({ where: { id } });
+
+        const temProduto = !!produtoCount;
+
+        if (!temProduto) {
+            throw new Error('Produto não encontrado');
+        }
+    };
+
     async create(data) {
-        const produto = await Produto.findOne({
+        const produto = await Produto.count({
             where: { nome: data.nome },
         });
 
-        if (produto) {
+        if (!!produto) {
             throw new Error('Esse produto já existe');
         }
 
@@ -14,11 +25,9 @@ class ProdutoService {
     };
 
     async find(filter) {
-        const produto = await Produto.findOne({ where: filter });
+        await this.verifica(filter.id);
 
-        if (!produto) {
-            throw new Error('Produto não encontrado');
-        }
+        const produto = await Produto.findOne({ where: filter });
 
         return produto;
     };
@@ -30,33 +39,34 @@ class ProdutoService {
     };
 
     async update(changes, filter) {
-        const produto = await Produto.findOne({ where: filter });
+        await this.verifica(filter.id);
 
-        if (!produto) {
-            throw new Error('Produto não existe');
-        }
-
-        const produtoAnalise = await Produto.findOne({
-            where: { nome: changes.nome },
+        const produtoAnalise = await Produto.count({
+            where: {
+                nome: changes.nome,
+                id: {
+                    [Op.ne]: filter.id, // not equal -> compara e busca os diferentes ids (nesse caso)
+                },
+            },
+            raw: true,
+            nest: true,
         });
 
-        if (produtoAnalise) {
+        const analise = !!produtoAnalise;
+
+        if (analise) {
             throw new Error('Esse produto já existe');
         }
 
-        Produto.update(changes, {
+        return Produto.update(changes, {
             where: filter,
         });
     };
 
     async delete(filter) {
-        const produto = await Produto.findOne({ where: filter });
+        await this.verifica(filter.id);
 
-        if (!produto) {
-            throw new Error('Produto não existe');
-        }
-
-        Produto.destroy({
+        return Produto.destroy({
             where: filter,
         });
     };

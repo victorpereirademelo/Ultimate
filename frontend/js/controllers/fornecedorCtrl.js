@@ -82,6 +82,12 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
         $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
     };
 
+    const limparFormulario = () => {
+        delete $scope.fornecedor;
+        $scope.fornecedorForm.$setPristine();
+        $scope.msg = 'Cadastrar';
+    };
+
     carregarFornecedores();
 
     $scope.consultCep = consultCep;
@@ -89,4 +95,5 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
     $scope.excluirFornecedor = excluirFornecedor;
     $scope.editarFornecedor = editarFornecedor;
     $scope.ordenarPor = ordenarPor;
+    $scope.limparFormulario = limparFormulario;
 });

@@ -73,10 +73,17 @@ angular.module("fornecedores").controller("produtoCtrl", function ($scope, produ
         $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
     };
 
+    const limparFormulario = () => {
+        delete $scope.produto;
+        $scope.produtoForm.$setPristine();
+        $scope.msg = 'Adicionar';
+    };
+
     carregarProdutos();
 
     $scope.submit = submit;
     $scope.excluirProduto = excluirProduto;
     $scope.editarProduto = editarProduto;
     $scope.ordenarPor = ordenarPor;
+    $scope.limparFormulario = limparFormulario;
 });

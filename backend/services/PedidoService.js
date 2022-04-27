@@ -2,11 +2,21 @@ import Pedido from "../models/Pedido";
 import ProdutoPedido from "../models/ProdutoPedido";
 import Produto from "../models/Produto";
 import Fornecedor from '../models/Fornecedor';
-import { Sequelize } from "sequelize";
-// import { Transaction } from 'Sequelize';
+import Sequelize from '../database/connection';
+
 class PedidoService {
-    async create(body) {
-        const { fornecedor_id, produto_id } = body;
+    async verifica(id) {
+        const pedidoCount = await Pedido.count({ where: id });
+
+        const temPedido = !!pedidoCount;
+
+        if (!temPedido) {
+            throw new Error('Pedido não encontrado');
+        }
+    };
+
+    async create(data) {
+        const { fornecedor_id, produto_id } = data;
 
         const pedido = await Pedido.create({ fornecedor_id });
 
@@ -33,11 +43,7 @@ class PedidoService {
     };
 
     async find(filter) {
-        const pedido = await Pedido.findOne({ where: filter });
-
-        if (!pedido) {
-            throw new Error('Pedido não encontrado');
-        }
+        await this.verifica(filter);
 
         const data = await ProdutoPedido.findAll({
             where: { pedido_id: filter.id },
@@ -69,13 +75,11 @@ class PedidoService {
             produtos: [],
         };
 
-        const newObj = { ...obj };
-
         data.forEach(element => {
-            newObj.produtos.push(element.Produto)
+            obj.produtos.push(element.Produto);
         });
 
-        return newObj;
+        return obj;
     };
 
     async list() {
@@ -115,55 +119,82 @@ class PedidoService {
     };
 
     async update(changes, filter) {
-        const pedido = await Pedido.findOne({ where: filter });
+        const transaction = await Sequelize.transaction();
 
-        const produtos = await ProdutoPedido.findAll({
-            attributes: [],
-            include: {
-                model: Produto,
-                attributes: ['id'],
+        try {
+            const pedido = await Pedido.findOne({ where: filter, raw: true, nest: true });
+
+            if (!pedido) {
+                throw new Error('Pedido não encontrado');
+            }
+
+            const produtos = await ProdutoPedido.findAll({
                 where: {
-                    deleted_at: null
+                    pedido_id: pedido.id
                 },
-                paranoid: false
-            },
-            where: {
-                pedido_id: pedido.id
-            },
-            raw: true,
-            nest: true
-        });
+                attributes: [],
+                include: {
+                    model: Produto,
+                    attributes: ['id'],
+                    where: {
+                        deleted_at: null,
+                    },
+                    paranoid: false,
+                },
+                raw: true,
+                nest: true
+            });
 
-        const mappedProductIds = produtos.map(produto => {
-            return produto['Produto'].id;
-        });
+            const idsDosProdutosMapeados = produtos.map(produto => produto.Produto.id);
+            console.log(idsDosProdutosMapeados, 'Estado Inicial');
 
-        //NOTE: Entender como é o difference entre os ids
+            const { fornecedor_id, situacao, produto_id } = changes;
 
-        if (!pedido) {
-            throw new Error('Pedido não encontrado');
+            const idsParaRemover = idsDosProdutosMapeados.filter(id => !produto_id.includes(id));
+
+            const idsParaAdicionar = produto_id.filter(id => !idsDosProdutosMapeados.includes(id));
+
+            const produtosBulk = idsParaAdicionar.map(idToAdd => {
+                return {
+                    pedido_id: pedido.id,
+                    produto_id: idToAdd
+                }
+            });
+
+            const promises = [
+                Pedido.update({ fornecedor_id, situacao }, {
+                    where: filter,
+                    transaction,
+                    // logging: true
+                }),
+
+                ProdutoPedido.destroy({
+                    where: {
+                        pedido_id: pedido.id,
+                        produto_id: idsParaRemover
+                    },
+                    transaction,
+                    // logging: true
+                }),
+
+                ProdutoPedido.bulkCreate(produtosBulk, {
+                    transaction,
+                    // logging: true
+                }),
+            ];
+
+            await Promise.all(promises);
+
+            await transaction.commit();
         }
-
-        const { fornecedor_id, situacao, produto_id } = changes;
-
-        const idsToRemove = mappedProductIds.filter(id => !produto_id.includes(id));
-        const idsToAdd = produto_id.filter(id => !mappedProductIds.includes(id));
-
-        console.log(idsToAdd);
-        console.log(idsToRemove);
-
-        // Pedido.update({fornecedor_id, situacao}, {
-        //     where: filter,
-        // })
+        catch (error) {
+            await transaction.rollback();
+            throw new Error('Não foi possível editar esse pedido');
+        }
     };
 
-    // FIXME
     async delete(filter) {
-        const pedido = await Pedido.findOne({ where: filter });
-
-        if (!pedido) {
-            throw new Error('Pedido não encontrado');
-        }
+        await this.verifica(filter);
 
         Pedido.destroy({
             where: filter,
