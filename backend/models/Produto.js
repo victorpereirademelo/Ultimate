@@ -16,7 +16,7 @@ class Produto extends Model {
             },
             preco: {
                 type: Sequelize.FLOAT,
-                defaultValue: '',
+                defaultValue: null,
                 validate: {
                     isFloat: {
                         msg: 'Preço precisa ser um número inteiro ou de ponto flutuante',
@@ -26,6 +26,7 @@ class Produto extends Model {
         },
             {
                 sequelize: connection,
+                paranoid: true,
                 tableName: 'produtos',
             });
 

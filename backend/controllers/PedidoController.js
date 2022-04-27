@@ -2,8 +2,9 @@ import PedidoService from '../services/PedidoService';
 import BaseController from './BaseController';
 
 class PedidoController extends BaseController {
-    constructor () {
+    constructor() {
         super();
+
         this.createAction = this.createAction.bind(this);
         this.readAction = this.readAction.bind(this);
         this.updateAction = this.updateAction.bind(this);
@@ -27,7 +28,7 @@ class PedidoController extends BaseController {
             };
 
             const action = filter.id ? 'find' : 'list';
-            const options = filter.id ? filter : '';
+            const options = filter.id ? filter : {};
 
             const resp = await PedidoService[action](options);
 

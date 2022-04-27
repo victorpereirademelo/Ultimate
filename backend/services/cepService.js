@@ -2,10 +2,10 @@ import cep from "cep-promise";
 
 class CepService {
     async index(resp) {
-        const resposta = await cep(resp);
+        const cepEncontrado = await cep(resp);
 
-        return resposta;
-    }
-}
+        return cepEncontrado;
+    };
+};
 
 export default new CepService();

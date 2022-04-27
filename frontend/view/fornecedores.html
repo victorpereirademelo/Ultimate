@@ -18,7 +18,9 @@
             <th>CNPJ:</th>
             <th>Ações</th>
         </tr>
-<!--<pre></pre>-->
+        <!-- <pre>
+            {{fornecedores | json}}
+        </pre> -->
         <tr ng-repeat="fornecedor in fornecedores | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
             <td>{{fornecedor.nome | nome}}</td> <!--Pipe-->
             <td>{{fornecedor.email}}</td>
@@ -63,6 +65,7 @@
             ng-required="true" ng-minlength="2" maxlength="6">
         <input class="form-control" type="text" ng-model="fornecedor.cnpj" name="cnpj" ng-required="true"
             ui-mask="99.999.999/9999-99">
+            <!-- {{fornecedor}} -->
     </form>
 
     <div ng-show="fornecedorForm.$error.required && fornecedorForm.$dirty" class="alert alert-danger">
@@ -71,6 +74,8 @@
 
     <button style="margin-bottom: 10px;" class="btn btn-primary btn-block" ng-click="submit(fornecedor, fornecedor.id)"
         ng-disabled="fornecedorForm.$invalid">{{msg}} Fornecedor</button>
+    <br>
+    <button style="margin-bottom: 10px;" class="btn btn-danger btn-block" ng-click="limparFormulario()">Cancelar</button>
 
         <a class="btn adjust-button" href="#!/produtos">Produtos &#10095;</a>
 </div>

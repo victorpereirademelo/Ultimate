@@ -1,17 +1,21 @@
+require('dotenv').config();
+
 module.exports = {
   development: {
-    username: "amigo",
-    password: null,
-    database: "ultimate",
-    host: "localhost",
     dialect: "postgres",
+    host: process.env.DATABASE_HOST,
+    port: process.env.DATABASE_PORT,
+    username: process.env.DATABASE_USERNAME,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE,
     logging: false,
     define: {
       timestamps: true,
       underscored: true,
       underscoredAll: true,
-      'createdAt': 'created_at',
-      'updatedAt': 'updated_at',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      deletedAt: 'deleted_at',
     },
   },
 };

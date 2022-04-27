@@ -1,12 +1,11 @@
 angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fornecedoresService, cepService) {
     $scope.app = "Fornecedores";
-    $scope.fornecedores = [];
     $scope.msg = 'Cadastrar';
 
     const carregarFornecedores = () => {
         fornecedoresService.getFornecedores().then(resp => {
             $scope.fornecedores = resp.data;
-        }).catch((data, status) => {
+        }).catch(() => {
             $scope.error = "Não foi possível carregar os dados!";
         });
     };
@@ -39,8 +38,7 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
                     title: 'Fornecedor atualizado com sucesso',
                     showConfirmButton: false,
                     timer: 1500,
-                });
-                carregarFornecedores();
+                }).then(() => carregarFornecedores());
             });
             return;
         };
@@ -67,7 +65,7 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Deletar'
-        }).then((result) => {
+        }).then(result => {
             if (result.isConfirmed) {
                 fornecedoresService.deleteFornecedor(id);
                 Swal.fire(
@@ -84,6 +82,12 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
         $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
     };
 
+    const limparFormulario = () => {
+        delete $scope.fornecedor;
+        $scope.fornecedorForm.$setPristine();
+        $scope.msg = 'Cadastrar';
+    };
+
     carregarFornecedores();
 
     $scope.consultCep = consultCep;
@@ -91,4 +95,5 @@ angular.module("fornecedores").controller("fornecedorCtrl", function ($scope, fo
     $scope.excluirFornecedor = excluirFornecedor;
     $scope.editarFornecedor = editarFornecedor;
     $scope.ordenarPor = ordenarPor;
+    $scope.limparFormulario = limparFormulario;
 });

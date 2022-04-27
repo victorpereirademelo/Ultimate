@@ -2,29 +2,37 @@
     <h3 class="adjust-header" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">{{app}}</h3>
 
     <ui-alert ng-if="error" title="Ops, aconteceu um problema!">{{error}}</ui-alert>
-
+<!-- <pre>
+    {{pedidos[0] | json}}
+</pre> -->
     <hr>
     <input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="O que você está buscando ?">
     <table ng-show="pedidos.length" class="table">
         <tr>
             <th>Id:</th>
+            <th>Cliente</th>
+            <th>Produtos</th>
             <th><a href="" ng-click="ordenarPor('situacao')">Situação:</a></th>
             <th>Ações</th>
         </tr>
-<!-- <pre>
-    {{pedidos[0] | json}}
-</pre> -->
+        <!-- <pre>
+            {{pedidos[0] | json}}
+        </pre> -->
         <tr ng-repeat="pedido in pedidos | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
             <td>{{pedido.id}}</td>
-            <td>{{pedido.situacao}}</td> <!--Pipe-->
+            <td>{{pedido.Fornecedor.nome}}</td>
+            <td>
+                <div ng-repeat="produto in pedido.produtos">{{produto.nome}}</div>
+            </td>
+            <td>{{pedido.situacao}}</td>
             <td>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle="dropdown" aria-expanded="false"></button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a ng-show="pedido.situacao.includes('Aberto')" class="dropdown-item" href=""
+                        <a ng-if="pedido.situacao.includes('Aberto')" class="dropdown-item" href=""
                             data-bs-toggle="modal" data-bs-target="#exampleModal" ng-click="editarPedido(pedido.id)">Editar</a>
-                        <a ng-show="pedido.situacao.includes('Aberto')" class="dropdown-item cor1" href="" ng-click="excluirPedido(pedido.id)">Apagar</a>
+                        <a ng-if="pedido.situacao.includes('Aberto')" class="dropdown-item cor1" href="" ng-click="excluirPedido(pedido.id)">Apagar</a>
                         <a class="dropdown-item cor2" href="{{ pedido.pdf_url }}" target="_blank">Baixar PDF</a>
                     </div>
                 </div>
@@ -32,29 +40,52 @@
         </tr>
     </table>
 
-    <!--Modal-->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form name="pedidoForm">
-                    <select ng-options="situacao for situacao in situacoes" ng-model="pedido.situacao" ng-required="true">
-                        <option value="">Situação do Pedido</option>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Editar Pedido</h5>
+          <button type="button" class="btn-close" ng-click="resetEditForm()" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+                <form>
+                    <h5>Escolha um Fornecedor:</h5>
+                    <select ng-options="fornecedor.id as fornecedor.nome for fornecedor in fornecedores" ng-model="editForm.fornecedor_id" ng-required="true">
+                        <option value="">Fornecedores</option>
+                    </select>
+                    <hr>
+                    <h5>Qual Situação do seu Pedido ?</h5>
+                    <select ng-options="situacao for situacao in situacoes" ng-model="editForm.situacao" ng-required="true">
+                        <option value="Aberto">Aberto</option>
                     </select>
                 </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" ng-click="submitUpdate(pedido)" data-bs-dismiss="modal" ng-disabled="pedidoForm.$invalid">Editar Pedido</button>
-            </div>
-          </div>
+                {{editForm}}
+                <hr>
+                <table ng-show="produtos.length" class="table">
+                    <tr>
+                        <th></th>
+                        <th>Id:</th>
+                        <th>Nome:</th>
+                        <th>Preço:</th>
+                    </tr>
+
+                    <tr ng-repeat="produto in produtos">
+                        <td><input type="checkbox" ng-model="produto.selected"></td>
+                        <td>{{produto.id}}</td>
+                        <td>{{produto.nome | nome}}</td> <!--Pipe-->
+                        <td>{{produto.preco | preco}}</td>
+                    </tr>
+                </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" ng-click="resetEditForm()" data-bs-dismiss="modal">Cancelar</a>
+          <button type="button" class="btn btn-primary" ng-click="submitEdit()" data-bs-dismiss="modal">Adicionar</button>
         </div>
       </div>
-    <!--Modal-->
+    </div>
+  </div>
+  <!-- Modal -->
 
     <a class="btn btn-primary btn-block" href="#!/adicionarpedidos">Adicionar Pedido</a>
     <a class="btn adjust-button" href="#!/produtos">&#10094; Produtos</a>

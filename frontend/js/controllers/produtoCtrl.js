@@ -1,6 +1,5 @@
 angular.module("fornecedores").controller("produtoCtrl", function ($scope, produtosService) {
     $scope.app = "Produtos";
-    $scope.produtos = [];
     $scope.msg = 'Adicionar';
 
     const carregarProdutos = () => {
@@ -30,8 +29,7 @@ angular.module("fornecedores").controller("produtoCtrl", function ($scope, produ
                     title: 'Produto atualizado com sucesso',
                     showConfirmButton: false,
                     timer: 1500,
-                });
-                carregarProdutos();
+                }).then(() => carregarProdutos());
             });
             return;
         };
@@ -58,7 +56,7 @@ angular.module("fornecedores").controller("produtoCtrl", function ($scope, produ
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Deletar'
-        }).then((result) => {
+        }).then(result => {
             if (result.isConfirmed) {
                 produtosService.deleteProduto(id);
                 Swal.fire(
@@ -75,10 +73,17 @@ angular.module("fornecedores").controller("produtoCtrl", function ($scope, produ
         $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
     };
 
+    const limparFormulario = () => {
+        delete $scope.produto;
+        $scope.produtoForm.$setPristine();
+        $scope.msg = 'Adicionar';
+    };
+
     carregarProdutos();
 
     $scope.submit = submit;
     $scope.excluirProduto = excluirProduto;
     $scope.editarProduto = editarProduto;
     $scope.ordenarPor = ordenarPor;
+    $scope.limparFormulario = limparFormulario;
 });
