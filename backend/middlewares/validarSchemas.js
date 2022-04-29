@@ -1,27 +1,28 @@
-const validarSchemas = schemas => {
-    return async (req, res, next) => {
+class SchemaValidator {
+    validate(schema) {
+        return async (req, res, next) => {
+            const chaves = Object.keys(schema);
 
-        const chaves = Object.keys(schemas);
+            const validarChaves = await Promise.all(
+                chaves.map(chave => {
 
-        const validarChaves = await Promise.all(
-            chaves.map(chave => {
+                    if (!schema[chave]) {
+                        return false;
+                    }
 
-                if (!schemas[chave]) {
-                    return false;
-                }
+                    return schema[chave].isValid(req[chave]);
+                }),
+            );
 
-                return schemas[chave].isValid(req[chave]);
-            }),
-        );
+            const temErro = validarChaves.some(item => !item);
 
-        const temErro = validarChaves.some(item => !item);
+            if (temErro) {
+                return res.status(400).json({ error: 'Erro de validação' });
+            }
 
-        if (temErro) {
-            return res.status(400).json({ error: 'Erro de validação' });
-        }
-
-        return next();
+            return next();
+        };
     };
 };
 
-export default validarSchemas;
+export default SchemaValidator;

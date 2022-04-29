@@ -23,9 +23,9 @@ class App {
     };
 
     routes() {
-        this.app.use('/fornecedores/', fornecedorRoutes);
-        this.app.use('/produtos/', produtoRoutes);
-        this.app.use('/pedidos/', pedidoRoutes);
+        this.app.use('/fornecedores', fornecedorRoutes.setup());
+        this.app.use('/produtos', produtoRoutes.setup());
+        this.app.use('/pedidos/', pedidoRoutes.setup());
         this.app.use('/cep/', cepRoutes);
         this.app.use('/pdf/', pdfRoutes);
     };

@@ -89,3 +89,10 @@ table {
 .adjust-select:focus {
     background-color: rgb(2, 80, 196)
 }
+
+.ellipsis {
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

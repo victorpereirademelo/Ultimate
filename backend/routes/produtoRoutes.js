@@ -1,15 +1,16 @@
-import express from "express";
-
-import validarSchemas from "../middlewares/validarSchemas";
+import BaseRoute from "./baseRoutes";
+import produtoController from "../controllers/ProdutoController";
 import produtoSchema from "../schemas/produtoSchema";
 
-import produtoController from "../controllers/ProdutoController";
+class ProdutoRoutes extends BaseRoute {
+    setup() {
+        this.routes.post('/', this.schemaValidator.validate(produtoSchema.create), produtoController.createAction);
+        this.routes.get('/:id?', produtoController.readAction);
+        this.routes.put('/:id', this.schemaValidator.validate(produtoSchema.update), produtoController.updateAction);
+        this.routes.delete('/:id', this.schemaValidator.validate(produtoSchema.delete), produtoController.deleteAction);
 
-const route = express.Router();
+        return this.routes;
+    }
+}
 
-route.post('/', validarSchemas(produtoSchema.create), produtoController.createAction);
-route.get('/:id?', produtoController.readAction);
-route.put('/:id', validarSchemas(produtoSchema.update), produtoController.updateAction);
-route.delete('/:id', validarSchemas(produtoSchema.delete), produtoController.deleteAction);
-
-export default route;
+export default new ProdutoRoutes();

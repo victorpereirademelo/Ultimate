@@ -1,15 +1,16 @@
-import express from "express";
-
-import validarSchemas from "../middlewares/validarSchemas";
+import BaseRoute from "./baseRoutes";
 import pedidoSchema from "../schemas/pedidoSchema";
-
 import pedidoController from "../controllers/PedidoController";
 
-const route = express.Router();
+class PedidoRoutes extends BaseRoute {
+    setup() {
+        this.routes.post('/', this.schemaValidator.validate(pedidoSchema.create), pedidoController.createAction);
+        this.routes.get('/:id?', pedidoController.readAction);
+        this.routes.put('/:id', this.schemaValidator.validate(pedidoSchema.update), pedidoController.updateAction);
+        this.routes.delete('/:id', this.schemaValidator.validate(pedidoSchema.delete), pedidoController.deleteAction);
 
-route.post('/', validarSchemas(pedidoSchema.create), pedidoController.createAction);
-route.get('/:id?', pedidoController.readAction);
-route.put('/:id', validarSchemas(pedidoSchema.update), pedidoController.updateAction);
-route.delete('/:id', validarSchemas(pedidoSchema.delete), pedidoController.deleteAction);
+        return this.routes;
+    };
+};
 
-export default route;
+export default new PedidoRoutes();

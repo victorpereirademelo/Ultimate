@@ -54,6 +54,7 @@ class PedidoService {
                 include: {
                     model: Fornecedor,
                     attributes: ['id', 'nome'],
+                    paranoid: false,
                 },
             },
             {
@@ -79,6 +80,7 @@ class PedidoService {
             obj.produtos.push(element.Produto);
         });
 
+        console.log(obj);
         return obj;
     };
 
@@ -91,6 +93,7 @@ class PedidoService {
                 include: {
                     model: Fornecedor,
                     attributes: ['id', 'nome'],
+                    paranoid: false,
                 },
             },
             {
@@ -101,6 +104,7 @@ class PedidoService {
             raw: true,
             nest: true,
         });
+        console.log(data);
 
         const pedidosID = {};
 

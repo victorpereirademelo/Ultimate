@@ -1,15 +1,16 @@
-import express from "express";
-
-import validarSchemas from "../middlewares/validarSchemas";
+import BaseRoute from "./baseRoutes";
+import fornecedorController from "../controllers/FornecedorController";
 import fornecedorSchema from "../schemas/fornecedorSchema";
 
-import fornecedorController from "../controllers/FornecedorController";
+class FornecedorRoutes extends BaseRoute {
+    setup() {
+        this.routes.post('/', this.schemaValidator.validate(fornecedorSchema.create), fornecedorController.createAction);
+        this.routes.get('/:id?', fornecedorController.readAction);
+        this.routes.put('/:id', this.schemaValidator.validate(fornecedorSchema.update), fornecedorController.updateAction);
+        this.routes.delete('/:id', this.schemaValidator.validate(fornecedorSchema.delete), fornecedorController.deleteAction);
 
-const route = express.Router();
+        return this.routes;
+    }
+}
 
-route.post('/', validarSchemas(fornecedorSchema.create), fornecedorController.createAction);
-route.get('/:id?', fornecedorController.readAction);
-route.put('/:id', validarSchemas(fornecedorSchema.update), fornecedorController.updateAction);
-route.delete('/:id', validarSchemas(fornecedorSchema.delete), fornecedorController.deleteAction);
-
-export default route;
+export default new FornecedorRoutes();

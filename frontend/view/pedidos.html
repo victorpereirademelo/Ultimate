@@ -21,9 +21,7 @@
         <tr ng-repeat="pedido in pedidos | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
             <td>{{pedido.id}}</td>
             <td>{{pedido.Fornecedor.nome}}</td>
-            <td>
-                <div ng-repeat="produto in pedido.produtos">{{produto.nome}}</div>
-            </td>
+            <td class="ellipsis">{{pedido.produtos_description}}</td>
             <td>{{pedido.situacao}}</td>
             <td>
                 <div class="dropdown">

@@ -6,7 +6,7 @@ class Pedido extends Model {
             situacao: {
                 type: Sequelize.ENUM('Aberto', 'Cancelado', 'Finalizado'),
                 allowNull: false,
-                defaultValue: 'Aberto'
+                defaultValue: 'Aberto',
             },
             fornecedor_id: {
                 type: Sequelize.INTEGER,
