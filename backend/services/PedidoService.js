@@ -16,11 +16,11 @@ class PedidoService {
     };
 
     async create(data) {
-        const { fornecedor_id, produto_id } = data;
+        const { fornecedor_id: fornecedorId, produto_id: produtoIds } = data;
 
-        const pedido = await Pedido.create({ fornecedor_id });
+        const pedido = await Pedido.create({ fornecedor_id: fornecedorId });
 
-        const produtoPedido = produto_id.map(produtoId => {
+        const produtoPedido = produtoIds.map(produtoId => {
             return {
                 produto_id: produtoId,
                 pedido_id: pedido.id,
@@ -31,7 +31,7 @@ class PedidoService {
 
         const produtos = await Produto.findAll({
             where: {
-                id: produto_id,
+                id: produtoIds,
             },
             attributes: ["id", "nome", "preco"],
         });
@@ -45,42 +45,34 @@ class PedidoService {
     async find(filter) {
         await this.verifica(filter);
 
+        const pedido = await Pedido.scope('includesFornecedor').findOne({
+            where: filter,
+            attributes: ['id', 'situacao']
+        });
+
         const data = await ProdutoPedido.findAll({
             where: { pedido_id: filter.id },
             attributes: [],
-            include: [{
-                model: Pedido,
-                attributes: ['id', 'situacao'],
-                include: {
-                    model: Fornecedor,
-                    attributes: ['id', 'nome'],
+            include: [
+                {
+                    model: Produto,
                     paranoid: false,
-                },
-            },
-            {
-                model: Produto,
-                paranoid: false,
-                attributes: ['id', 'nome'],
-            }],
+                    attributes: ['id', 'nome'],
+                }],
             raw: true,
             nest: true,
         });
 
         const obj = {
-            id: data[0].Pedido.id,
-            situacao: data[0].Pedido.situacao,
+            id: pedido.id,
+            situacao: pedido.situacao,
             fornecedor: {
-                id: data[0].Pedido.Fornecedor.id,
-                nome: data[0].Pedido.Fornecedor.nome,
+                id: pedido.Fornecedor.id,
+                nome: pedido.Fornecedor.nome,
             },
-            produtos: [],
+            produtos: data.map(element => element.Produto),
         };
 
-        data.forEach(element => {
-            obj.produtos.push(element.Produto);
-        });
-
-        console.log(obj);
         return obj;
     };
 
@@ -104,7 +96,6 @@ class PedidoService {
             raw: true,
             nest: true,
         });
-        console.log(data);
 
         const pedidosID = {};
 

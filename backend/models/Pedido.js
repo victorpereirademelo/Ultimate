@@ -1,4 +1,5 @@
 import Sequelize, { Model } from "sequelize";
+import Fornecedor from "./Fornecedor";
 
 class Pedido extends Model {
     static init(connection) {
@@ -16,6 +17,15 @@ class Pedido extends Model {
             {
                 sequelize: connection,
                 tableName: 'pedidos',
+                scopes: {
+                    includesFornecedor: {
+                        include: [{
+                            model: Fornecedor,
+                            attributes: ['id', 'nome'],
+                            paranoid: false,
+                        }],
+                    }
+                }
             });
 
         return this;
